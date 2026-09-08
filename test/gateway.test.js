@@ -6,6 +6,7 @@ import { join } from 'node:path';
 import request from 'supertest';
 import { createApp } from '../src/app.js';
 import { createAuthService, createBillingService, createUsersService } from '../src/services.js';
+import vercelApp from '../src/vercel.js';
 
 async function server(app) {
   const instance = app.listen(0, '127.0.0.1');
@@ -36,4 +37,16 @@ test('gateway authenticates, routes to all three services, and writes centralize
   const rows = (await readFile(join(directory, 'gateway.jsonl'), 'utf8')).trim().split('\n').map(JSON.parse);
   assert.deepEqual(rows.map((row) => row.targetRoute), ['users', 'users', 'auth', 'billing', 'unmatched']);
   assert.equal(rows.every((row) => row.timestamp && row.clientIp && row.method), true);
+});
+
+test('Vercel adapter exposes protected gateway routes under /api', async () => {
+  const previousKey = process.env.API_KEY;
+  process.env.API_KEY = 'vercel-test-key';
+  assert.equal((await request(vercelApp).get('/api/users')).status, 401);
+  const users = await request(vercelApp).get('/api/users').set('X-API-Key', 'vercel-test-key');
+  assert.equal(users.status, 200);
+  assert.equal(users.body.service, 'users');
+  assert.equal((await request(vercelApp).get('/api/health')).status, 200);
+  if (previousKey === undefined) delete process.env.API_KEY;
+  else process.env.API_KEY = previousKey;
 });

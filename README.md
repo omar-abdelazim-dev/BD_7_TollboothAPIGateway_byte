@@ -31,6 +31,10 @@ API_KEY='a-long-random-development-key' npm start
 
 This starts the gateway on port `4000` and the internal services on `4101`-`4103`. Run tests with `npm test`.
 
+## Vercel demo
+
+The public Vercel demo exposes the same API-key-protected routes under `/api` (for example, `/api/users`). Vercel serverless functions cannot keep the three internal processes alive, so the demo mounts the simulated services inside a serverless adapter. The repository's `src/server.js` remains the full local reverse-proxy implementation with independently running services and append-only log file.
+
 ## Examples
 
 Unauthorized traffic is denied:
