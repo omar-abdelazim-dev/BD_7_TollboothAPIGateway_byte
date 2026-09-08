@@ -4,6 +4,7 @@ import { createAuthService, createBillingService, createUsersService } from './s
 const app = express();
 app.disable('x-powered-by');
 app.use(express.json());
+app.get('/', (_req, res) => res.type('html').send('<main><h1>Tollbooth API Gateway</h1><p>API health: <a href="/api/health">/api/health</a></p></main>'));
 
 function validKey(value) {
   const expected = process.env.API_KEY;
