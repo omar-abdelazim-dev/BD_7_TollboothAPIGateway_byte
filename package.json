@@ -1,0 +1,10 @@
+{
+  "name": "bd-7-tollbooth-api-gateway-byte",
+  "version": "1.0.0",
+  "description": "Authenticated API gateway routing traffic to simulated microservices",
+  "type": "module",
+  "scripts": { "start": "node src/server.js", "test": "node --test" },
+  "engines": { "node": ">=22.5" },
+  "dependencies": { "express": "^5.1.0", "http-proxy": "^1.18.1" },
+  "devDependencies": { "supertest": "^7.1.4" }
+}
